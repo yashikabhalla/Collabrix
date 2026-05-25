@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id          String       @id @default(cuid())
+  clerkId     String       @unique
+  name        String
+  email       String       @unique
+  avatar      String?
+  createdAt   DateTime     @default(now())
+  rooms       Room[]
+  submissions Submission[]
+}
+
+model Room {
+  id          String       @id @default(cuid())
+  name        String
+  language    String       @default("javascript")
+  createdBy   String
+  isActive    Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  user        User         @relation(fields: [createdBy], references: [clerkId])
+  submissions Submission[]
+}
+
+model Submission {
+  id        String   @id @default(cuid())
+  code      String
+  language  String
+  score     Int?
+  userId    String
+  roomId    String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [clerkId])
+  room      Room     @relation(fields: [roomId], references: [id])
+}
