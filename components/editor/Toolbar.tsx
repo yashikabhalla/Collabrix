@@ -21,7 +21,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { UserButton } from "@clerk/nextjs";
 
-const languages = [
+const freeLanguages = [
   { value: "javascript", label: "JavaScript" },
   { value: "typescript", label: "TypeScript" },
   { value: "python", label: "Python" },
@@ -30,6 +30,14 @@ const languages = [
   { value: "c", label: "C" },
   { value: "go", label: "Go" },
   { value: "rust", label: "Rust" },
+];
+
+const proLanguages = [
+  ...freeLanguages,
+  { value: "kotlin", label: "Kotlin" },
+  { value: "swift", label: "Swift" },
+  { value: "php", label: "PHP" },
+  { value: "ruby", label: "Ruby" },
 ];
 
 interface Props {
@@ -107,7 +115,7 @@ export default function Toolbar({
             position="popper"
             sideOffset={5}
           >
-            {languages.map((lang) => (
+            {(userPlan === "pro" ? proLanguages : freeLanguages).map((lang) => (
               <SelectItem
                 key={lang.value}
                 value={lang.value}
