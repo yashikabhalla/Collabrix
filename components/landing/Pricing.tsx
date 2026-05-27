@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
+import { Check, X } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@clerk/nextjs";
 import { useState } from "react";
@@ -13,12 +13,14 @@ const plans = [
     price: "₹0",
     description: "Perfect for students",
     features: [
-      "3 rooms per month",
-      "2 participants per room",
-      "8 programming languages",
-      "AI hints (5 per session)",
-      "Code execution",
-      "Video calling",
+      { text: "3 rooms per month", included: true },
+      { text: "2 participants per room", included: true },
+      { text: "8 programming languages", included: true },
+      { text: "Code execution", included: true },
+      { text: "Video calling", included: true },
+      { text: "AI Interviewer", included: false },
+      { text: "Session recordings", included: false },
+      { text: "Performance analytics", included: false },
     ],
     cta: "Get Started Free",
     href: "/sign-up",
@@ -30,13 +32,14 @@ const plans = [
     price: "₹299",
     description: "For serious interview prep",
     features: [
-      "Unlimited rooms",
-      "5 participants per room",
-      "10+ programming languages",
-      "Unlimited AI hints",
-      "Video calling",
-      "Session recordings",
-      "Performance analytics",
+      { text: "Unlimited rooms", included: true },
+      { text: "5 participants per room", included: true },
+      { text: "10+ programming languages", included: true },
+      { text: "Code execution", included: true },
+      { text: "Video calling", included: true },
+      { text: "AI Interviewer", included: true },
+      { text: "Session recordings", included: true },
+      { text: "Performance analytics", included: true },
     ],
     cta: "Start Pro",
     href: "/sign-up",
@@ -58,7 +61,6 @@ export default function Pricing({ userPlan }: Props) {
       <UpgradeModal open={showUpgrade} onClose={() => setShowUpgrade(false)} />
 
       <div className="max-w-7xl mx-auto">
-
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
@@ -120,18 +122,23 @@ export default function Pricing({ userPlan }: Props) {
                 <ul className="space-y-3 mb-8">
                   {plan.features.map((feature) => (
                     <li
-                      key={feature}
-                      className="flex items-center gap-3 text-gray-300 text-sm"
+                      key={feature.text}
+                      className={`flex items-center gap-3 text-sm ${
+                        feature.included ? "text-gray-300" : "text-gray-600"
+                      }`}
                     >
-                      <Check className="w-4 h-4 text-violet-400 flex-shrink-0" />
-                      {feature}
+                      {feature.included ? (
+                        <Check className="w-4 h-4 text-violet-400 flex-shrink-0" />
+                      ) : (
+                        <X className="w-4 h-4 text-gray-600 flex-shrink-0" />
+                      )}
+                      {feature.text}
                     </li>
                   ))}
                 </ul>
 
                 {/* CTA Button Logic */}
                 {!isSignedIn && (
-                  // Not logged in — show signup button
                   <Link href={plan.href}>
                     <Button
                       className={`w-full ${
@@ -146,7 +153,6 @@ export default function Pricing({ userPlan }: Props) {
                 )}
 
                 {isProAndUserIsPro && (
-                  // User already has Pro — show active badge
                   <Button
                     disabled
                     className="w-full bg-green-600/20 text-green-400 border border-green-500/30 cursor-default"
@@ -156,7 +162,6 @@ export default function Pricing({ userPlan }: Props) {
                 )}
 
                 {isFreeAndUserIsPro && (
-                  // User has Pro, showing Free card — just show Go to Dashboard
                   <Link href="/dashboard">
                     <Button className="w-full bg-white/10 hover:bg-white/20 text-white">
                       Go to Dashboard
@@ -165,7 +170,6 @@ export default function Pricing({ userPlan }: Props) {
                 )}
 
                 {isProAndUserIsFree && (
-                  // User has Free, showing Pro card — show Upgrade button
                   <Button
                     onClick={() => setShowUpgrade(true)}
                     className="w-full bg-violet-600 hover:bg-violet-700 text-white"
@@ -175,7 +179,6 @@ export default function Pricing({ userPlan }: Props) {
                 )}
 
                 {isSignedIn && userPlan === "free" && plan.planKey === "free" && (
-                  // User has Free, showing Free card
                   <Link href="/dashboard">
                     <Button className="w-full bg-white/10 hover:bg-white/20 text-white">
                       ✓ Current Plan — Go to Dashboard

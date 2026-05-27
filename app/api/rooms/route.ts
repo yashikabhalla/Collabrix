@@ -2,6 +2,25 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
+// Free plan limits
+export const FREE_LIMITS = {
+  maxRooms: 3,
+  maxParticipants: 2,
+  languages: [
+    "javascript", "typescript", "python", "java",
+    "cpp", "c", "go", "ruby",
+  ],
+};
+
+export const PRO_LIMITS = {
+  maxRooms: Infinity,
+  maxParticipants: 5,
+  languages: [
+    "javascript", "typescript", "python", "java",
+    "cpp", "c", "go", "rust", "kotlin", "swift", "php", "ruby",
+  ],
+};
+
 // GET - Fetch all rooms for current user
 export async function GET() {
   try {
@@ -11,7 +30,6 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Get or create user in database
     let user = await db.user.findUnique({
       where: { clerkId: userId },
     });
@@ -58,18 +76,28 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // Check plan limits
+    const limits = user.plan === "pro" ? PRO_LIMITS : FREE_LIMITS;
+
+    // Check room limit
     if (user.plan === "free") {
       const roomCount = await db.room.count({
         where: { createdBy: userId },
       });
 
-      if (roomCount >= 3) {
+      if (roomCount >= FREE_LIMITS.maxRooms) {
         return NextResponse.json(
-          { error: "LIMIT_REACHED" },
+          { error: "LIMIT_REACHED", message: "Free plan allows only 3 rooms. Upgrade to Pro for unlimited rooms." },
           { status: 403 }
         );
       }
+    }
+
+    // Check language is allowed for plan
+    if (!limits.languages.includes(language)) {
+      return NextResponse.json(
+        { error: "LANGUAGE_NOT_ALLOWED", message: `${language} is not available on your plan. Upgrade to Pro for 10+ languages.` },
+        { status: 403 }
+      );
     }
 
     const room = await db.room.create({

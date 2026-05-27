@@ -2,7 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Bot, Send, Loader2, User, RefreshCw } from "lucide-react";
+import { Bot, Send, Loader2, User, RefreshCw, Lock, Zap } from "lucide-react";
+import Link from "next/link";
 
 interface Message {
   role: "user" | "assistant";
@@ -16,20 +17,19 @@ Your behavior:
 - In Mock Interview mode: act strict like a real interviewer, ask one problem, evaluate their approach, ask follow-up questions on complexity and edge cases
 - In Practice mode: be friendly, let them pick topic/difficulty, give hints when asked
 - Always ask what their target company is to tailor the difficulty
-- If they ask for hints, give small nudges without giving away the answer
-- Ask follow-up questions like "What is the time complexity?", "Can you optimize this?", "What about edge cases?"
-- Give encouraging feedback
-- Stay in character throughout the conversation
 - Keep responses concise and conversational (2-4 sentences max unless giving a problem)
 - If they want a new problem, give them one`;
 
-const INITIAL_MESSAGE = "Hey! 👋 Ready to ace your placement interviews?\n\nI can help you in two ways:\n1️⃣ Mock Interview — I'll act as a real interviewer, ask you problems, and evaluate your answers\n2️⃣ Practice Mode — Pick a topic and difficulty, and we'll solve problems together with hints\n\nWhich one would you like? And what's your target company — product (Google/Microsoft/Amazon) or service (TCS/Infosys/Wipro)?";
+interface Props {
+  isPro?: boolean;
+}
 
-export default function AIChat() {
+export default function AIChat({ isPro = false }: Props) {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: INITIAL_MESSAGE,
+      content:
+        "Hey! 👋 Ready to ace your placement interviews?\n\nI can help you in two ways:\n1️⃣ Mock Interview — I'll act as a real interviewer, ask you problems, and evaluate your answers\n2️⃣ Practice Mode — Pick a topic and difficulty, and we'll solve problems together with hints\n\nWhich one would you like? And what's your target company — product (Google/Microsoft/Amazon) or service (TCS/Infosys/Wipro)?",
     },
   ]);
   const [input, setInput] = useState("");
@@ -62,18 +62,14 @@ export default function AIChat() {
 
       const data = await res.json();
 
-      if (data.result) {
-        setMessages((prev) => [
-          ...prev,
-          { role: "assistant", content: data.result },
-        ]);
-      } else {
-        setMessages((prev) => [
-          ...prev,
-          { role: "assistant", content: "Sorry, I had trouble responding. Please try again." },
-        ]);
-      }
-    } catch (error) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: data.result || "Sorry, I had trouble responding. Please try again.",
+        },
+      ]);
+    } catch {
       setMessages((prev) => [
         ...prev,
         { role: "assistant", content: "Network error. Please try again." },
@@ -87,15 +83,41 @@ export default function AIChat() {
     setMessages([
       {
         role: "assistant",
-        content: INITIAL_MESSAGE,
+        content:
+          "Hey! 👋 Ready to ace your placement interviews?\n\nI can help you in two ways:\n1️⃣ Mock Interview — I'll act as a real interviewer, ask you problems, and evaluate your answers\n2️⃣ Practice Mode — Pick a topic and difficulty, and we'll solve problems together with hints\n\nWhich one would you like? And what's your target company — product (Google/Microsoft/Amazon) or service (TCS/Infosys/Wipro)?",
       },
     ]);
     setInput("");
   };
 
+  // Free plan — show locked state
+  if (!isPro) {
+    return (
+      <div className="flex flex-col h-full min-h-0 bg-gray-950 items-center justify-center p-6 text-center overflow-hidden">
+        <div className="w-14 h-14 bg-violet-600/20 rounded-2xl flex items-center justify-center mb-4">
+          <Bot className="w-7 h-7 text-violet-400" />
+        </div>
+        <div className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center mb-4 -mt-5 ml-8">
+          <Lock className="w-4 h-4 text-gray-400" />
+        </div>
+        <h3 className="text-white font-semibold text-base mb-2">AI Interviewer</h3>
+        <p className="text-gray-500 text-xs leading-relaxed mb-5 max-w-[200px]">
+          Practice mock interviews with an AI interviewer. Available on Pro plan.
+        </p>
+        <Link href="/#pricing">
+          <Button size="sm" className="bg-violet-600 hover:bg-violet-700 text-white gap-2 text-xs">
+            <Zap className="w-3 h-3" />
+            Upgrade to Pro
+          </Button>
+        </Link>
+        <p className="text-gray-700 text-xs mt-3">₹299/month · Cancel anytime</p>
+      </div>
+    );
+  }
+
+  // Pro plan — full chat
   return (
     <div className="flex flex-col h-full bg-gray-950">
-
       {/* Header */}
       <div className="h-10 border-b border-white/10 flex items-center px-4 justify-between flex-shrink-0">
         <div className="flex items-center gap-2">
@@ -115,10 +137,7 @@ export default function AIChat() {
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-3 space-y-3">
         {messages.map((msg, i) => (
-          <div
-            key={i}
-            className={`flex gap-2 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
-          >
+          <div key={i} className={`flex gap-2 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
             <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
               msg.role === "assistant" ? "bg-violet-600/30" : "bg-blue-600/30"
             }`}>
@@ -147,7 +166,6 @@ export default function AIChat() {
             </div>
           </div>
         )}
-
         <div ref={bottomRef} />
       </div>
 

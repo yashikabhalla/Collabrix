@@ -1,7 +1,7 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
-import { Code2, Users, Trophy, Zap } from "lucide-react";
+import { Code2, Users, Trophy, Zap, Lock } from "lucide-react";
 import CreateRoom from "@/components/dashboard/CreateRoom";
 import RoomCard from "@/components/dashboard/RoomCard";
 import { UserButton } from "@clerk/nextjs";
@@ -32,11 +32,30 @@ export default async function DashboardPage() {
     });
   }
 
+  const isPro = user.plan === "pro";
+// Auto-trim excess rooms when on free plan
+if (user.plan === "free") {
+  const allRooms = await db.room.findMany({
+    where: { createdBy: userId },
+    orderBy: { createdAt: "desc" },
+  });
+
+  if (allRooms.length > 3) {
+    const excessRooms = allRooms.slice(3); // keep newest 3, delete the rest
+    await db.room.deleteMany({
+      where: {
+        id: { in: excessRooms.map((r) => r.id) },
+      },
+    });
+  }
+}
   // Fetch rooms
   const rooms = await db.room.findMany({
     where: { createdBy: userId },
     orderBy: { createdAt: "desc" },
   });
+
+  const roomsLeft = isPro ? null : Math.max(0, 3 - rooms.length);
 
   return (
     <div className="min-h-screen bg-black">
@@ -51,21 +70,18 @@ export default async function DashboardPage() {
               </div>
               <span className="text-white font-bold text-xl">Collabrix</span>
             </Link>
-
             <div className="hidden md:flex items-center gap-6">
-              <Link href="/" className="text-gray-400 hover:text-white text-sm transition-colors">
-                Home
-              </Link>
-              <Link href="/#features" className="text-gray-400 hover:text-white text-sm transition-colors">
-                Features
-              </Link>
-              <Link href="/#pricing" className="text-gray-400 hover:text-white text-sm transition-colors">
-                Pricing
-              </Link>
+              <Link href="/" className="text-gray-400 hover:text-white text-sm transition-colors">Home</Link>
+              <Link href="/#features" className="text-gray-400 hover:text-white text-sm transition-colors">Features</Link>
+              <Link href="/#pricing" className="text-gray-400 hover:text-white text-sm transition-colors">Pricing</Link>
             </div>
           </div>
-
           <div className="flex items-center gap-4">
+            {isPro && (
+              <span className="text-xs bg-violet-600/20 border border-violet-500/30 text-violet-300 px-3 py-1 rounded-full font-medium">
+                ⚡ Pro
+              </span>
+            )}
             <span className="text-gray-400 text-sm hidden md:block">
               Hey, {clerkUser.firstName}! 👋
             </span>
@@ -79,12 +95,8 @@ export default async function DashboardPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-white mb-2">
-              Your Rooms
-            </h1>
-            <p className="text-gray-400">
-              Create or join a room to start coding together
-            </p>
+            <h1 className="text-4xl font-bold text-white mb-2">Your Rooms</h1>
+            <p className="text-gray-400">Create or join a room to start coding together</p>
           </div>
           <CreateRoom roomCount={rooms.length} plan={user.plan} />
         </div>
@@ -102,22 +114,19 @@ export default async function DashboardPage() {
             {
               icon: Users,
               label: "Current Plan",
-              value: user.plan === "pro" ? "Pro ⚡" : "Free",
-              color: user.plan === "pro" ? "text-yellow-400" : "text-blue-400",
-              bg: user.plan === "pro" ? "bg-yellow-400/10" : "bg-blue-400/10",
+              value: isPro ? "Pro ⚡" : "Free",
+              color: isPro ? "text-yellow-400" : "text-blue-400",
+              bg: isPro ? "bg-yellow-400/10" : "bg-blue-400/10",
             },
             {
               icon: Trophy,
               label: "Rooms Left",
-              value: user.plan === "pro" ? "∞" : `${Math.max(0, 3 - rooms.length)}/3`,
+              value: isPro ? "∞" : `${roomsLeft}/3`,
               color: "text-yellow-400",
               bg: "bg-yellow-400/10",
             },
           ].map((stat) => (
-            <div
-              key={stat.label}
-              className="bg-white/5 border border-white/10 rounded-2xl p-6 flex items-center gap-4"
-            >
+            <div key={stat.label} className="bg-white/5 border border-white/10 rounded-2xl p-6 flex items-center gap-4">
               <div className={`w-12 h-12 ${stat.bg} rounded-xl flex items-center justify-center`}>
                 <stat.icon className={`w-6 h-6 ${stat.color}`} />
               </div>
@@ -129,44 +138,56 @@ export default async function DashboardPage() {
           ))}
         </div>
 
-        {/* Usage Bar — only for free users */}
-        {user.plan === "free" && (
+        {/* Free plan usage bar */}
+        {!isPro && (
           <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-8">
             <div className="flex items-center justify-between mb-3">
               <div>
                 <p className="text-white font-medium">Free Plan Usage</p>
-                <p className="text-gray-400 text-sm">
-                  {rooms.length} of 3 rooms used
-                </p>
+                <p className="text-gray-400 text-sm">{rooms.length} of 3 rooms used</p>
               </div>
-              <Button
-                size="sm"
-                className="bg-violet-600 hover:bg-violet-700 text-white gap-1"
-              >
-                <Zap className="w-3 h-3" />
-                Upgrade to Pro
-              </Button>
+              <Link href="/#pricing">
+                <Button size="sm" className="bg-violet-600 hover:bg-violet-700 text-white gap-1">
+                  <Zap className="w-3 h-3" />
+                  Upgrade to Pro
+                </Button>
+              </Link>
             </div>
-
-            {/* Progress Bar */}
             <div className="w-full bg-gray-800 rounded-full h-2">
               <div
                 className={`h-2 rounded-full transition-all duration-500 ${
-                  rooms.length >= 3
-                    ? "bg-red-500"
-                    : rooms.length >= 2
-                    ? "bg-yellow-500"
-                    : "bg-violet-600"
+                  rooms.length >= 3 ? "bg-red-500" : rooms.length >= 2 ? "bg-yellow-500" : "bg-violet-600"
                 }`}
                 style={{ width: `${Math.min((rooms.length / 3) * 100, 100)}%` }}
               />
             </div>
-
             {rooms.length >= 3 && (
               <p className="text-red-400 text-xs mt-2">
-                ⚠️ Room limit reached. Upgrade to create more rooms.
+                ⚠️ Room limit reached. Upgrade to Pro to create more rooms.
               </p>
             )}
+          </div>
+        )}
+
+        {/* Pro feature locked banners for free users */}
+        {!isPro && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            {[
+              { icon: "🤖", label: "AI Interviewer", desc: "Mock interviews with AI" },
+              { icon: "🎥", label: "Session Recordings", desc: "Record and replay sessions" },
+              { icon: "📊", label: "Performance Analytics", desc: "Track your progress" },
+            ].map((feature) => (
+              <div key={feature.label} className="bg-white/3 border border-white/8 rounded-xl p-4 flex items-center gap-3 opacity-60">
+                <div className="w-9 h-9 bg-gray-800 rounded-lg flex items-center justify-center text-lg flex-shrink-0">
+                  {feature.icon}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-gray-400 text-sm font-medium">{feature.label}</p>
+                  <p className="text-gray-600 text-xs">{feature.desc}</p>
+                </div>
+                <Lock className="w-4 h-4 text-gray-600 flex-shrink-0" />
+              </div>
+            ))}
           </div>
         )}
 
@@ -176,12 +197,8 @@ export default async function DashboardPage() {
             <div className="w-16 h-16 bg-violet-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <Code2 className="w-8 h-8 text-violet-400" />
             </div>
-            <h3 className="text-white text-xl font-semibold mb-2">
-              No rooms yet
-            </h3>
-            <p className="text-gray-400 mb-6">
-              Create your first room and start coding with friends!
-            </p>
+            <h3 className="text-white text-xl font-semibold mb-2">No rooms yet</h3>
+            <p className="text-gray-400 mb-6">Create your first room and start coding with friends!</p>
             <CreateRoom roomCount={rooms.length} plan={user.plan} />
           </div>
         ) : (
@@ -189,10 +206,7 @@ export default async function DashboardPage() {
             {rooms.map((room) => (
               <RoomCard
                 key={room.id}
-                room={{
-                  ...room,
-                  createdAt: room.createdAt.toISOString(),
-                }}
+                room={{ ...room, createdAt: room.createdAt.toISOString() }}
               />
             ))}
           </div>

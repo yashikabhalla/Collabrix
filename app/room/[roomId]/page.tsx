@@ -41,6 +41,8 @@ export default async function RoomPage({ params }: Props) {
     });
   }
 
+  const isPro = user.plan === "pro";
+
   return (
     <RoomClient
       room={{
@@ -53,6 +55,7 @@ export default async function RoomPage({ params }: Props) {
         name: `${clerkUser.firstName} ${clerkUser.lastName}`,
         avatar: clerkUser.imageUrl,
       }}
+      isPro={isPro}
     />
   );
 }
