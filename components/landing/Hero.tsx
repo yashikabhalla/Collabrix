@@ -37,19 +37,42 @@ export default function Hero() {
         </p>
 
         {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-          <Link href="/sign-up">
-            <Button size="lg" className="bg-violet-600 hover:bg-violet-700 text-white px-8 py-6 text-lg rounded-xl">
-              Start Coding Free
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-          </Link>
-          <Link href="#how-it-works">
-            <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10 px-8 py-6 text-lg rounded-xl">
-              See How It Works
-            </Button>
-          </Link>
-        </div>
+        {/* CTA Buttons */}
+<div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+  
+  {/* Start Free */}
+  <Link href="/sign-up">
+    <Button
+      size="lg"
+      className="bg-violet-600 hover:bg-violet-700 text-white px-8 py-6 text-lg rounded-xl"
+    >
+      Start Coding Free
+      <ArrowRight className="ml-2 w-5 h-5" />
+    </Button>
+  </Link>
+
+  {/* Launch Demo */}
+  <Link href="/demo">
+    <Button
+      size="lg"
+      className="bg-white text-black hover:bg-gray-200 px-8 py-6 text-lg rounded-xl font-semibold"
+    >
+      🚀 Launch Demo
+    </Button>
+  </Link>
+
+  {/* How It Works */}
+  <Link href="#how-it-works">
+    <Button
+      size="lg"
+      variant="outline"
+      className="border-white/20 text-white hover:bg-white/10 px-8 py-6 text-lg rounded-xl"
+    >
+      See How It Works
+    </Button>
+  </Link>
+
+</div>
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-8 max-w-lg mx-auto">
