@@ -44,16 +44,32 @@ export async function POST(req: Request) {
     const { name, language } = await req.json();
 
     if (!name || !language) {
-      return NextResponse.json({ error: "Name and language are required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Name and language are required" },
+        { status: 400 }
+      );
     }
 
-    // Get user from database
     const user = await db.user.findUnique({
       where: { clerkId: userId },
     });
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    // Check plan limits
+    if (user.plan === "free") {
+      const roomCount = await db.room.count({
+        where: { createdBy: userId },
+      });
+
+      if (roomCount >= 3) {
+        return NextResponse.json(
+          { error: "LIMIT_REACHED" },
+          { status: 403 }
+        );
+      }
     }
 
     const room = await db.room.create({
@@ -67,6 +83,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ room }, { status: 201 });
   } catch (error) {
     console.error("POST /api/rooms error:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

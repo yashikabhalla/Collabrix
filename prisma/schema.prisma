@@ -13,6 +13,7 @@ model User {
   name        String
   email       String       @unique
   avatar      String?
+  plan        String       @default("free")
   createdAt   DateTime     @default(now())
   rooms       Room[]
   submissions Submission[]
