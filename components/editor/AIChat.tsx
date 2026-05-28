@@ -28,15 +28,31 @@ interface Props {
 }
 
 export default function AIChat({ isPro = false }: Props) {
-  const [messages, setMessages] = useState<Message[]>([
-    { role: "assistant", content: INITIAL_MESSAGE },
-  ]);
+  const storageKey = `ai-chat-${typeof window !== "undefined" ? window.location.pathname : "default"}`;
+
+  const [messages, setMessages] = useState<Message[]>(() => {
+    if (typeof window === "undefined") return [{ role: "assistant", content: INITIAL_MESSAGE }];
+    try {
+      const saved = localStorage.getItem(storageKey);
+      return saved ? JSON.parse(saved) : [{ role: "assistant", content: INITIAL_MESSAGE }];
+    } catch {
+      return [{ role: "assistant", content: INITIAL_MESSAGE }];
+    }
+  });
+
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  // Persist messages to localStorage on every change
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem(storageKey, JSON.stringify(messages));
+    }
   }, [messages]);
 
   const sendMessage = async () => {
@@ -68,6 +84,9 @@ export default function AIChat({ isPro = false }: Props) {
   };
 
   const resetChat = () => {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem(storageKey);
+    }
     setMessages([{ role: "assistant", content: INITIAL_MESSAGE }]);
     setInput("");
   };
