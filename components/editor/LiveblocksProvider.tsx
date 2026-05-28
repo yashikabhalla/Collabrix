@@ -20,51 +20,47 @@ export default function LiveblocksRoomProvider({
 }: Props) {
   const [blocked, setBlocked] = useState(false);
 
-  const authEndpoint = async (room: string) => {
+  // Pre-check participant limit before entering the room
+  const checkRoom = async () => {
     const res = await fetch("/api/liveblocks-auth", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ room }),
+      body: JSON.stringify({ room: roomId }),
     });
-
     if (res.status === 403) {
       const data = await res.json();
       if (data.error === "PARTICIPANT_LIMIT") {
         setBlocked(true);
-        throw new Error("PARTICIPANT_LIMIT");
       }
     }
-
-    return res.json();
   };
 
-  // Show blocked UI if participant limit reached
   if (blocked) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[#0e0e10] flex items-center justify-center p-4">
         <div className="text-center max-w-sm">
-          <div className="w-16 h-16 bg-red-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <Users className="w-8 h-8 text-red-400" />
+          <div className="w-14 h-14 bg-red-500/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <Users className="w-7 h-7 text-red-400" />
           </div>
-          <h2 className="text-white text-xl font-bold mb-2">Room Full</h2>
-          <p className="text-gray-400 text-sm mb-6 leading-relaxed">
-            This room already has 2 participants. Free plan allows a maximum of 2 participants per room.
+          <h2 className="text-[#fafafa] text-lg font-medium mb-2">Room full</h2>
+          <p className="text-[#71717a] text-sm mb-6 leading-relaxed">
+            This room already has 2 participants. Free plan allows a maximum of 2 participants.
             Upgrade to Pro for up to 5 participants.
           </p>
           <div className="flex flex-col gap-3">
             <Link href="/#pricing">
-              <Button className="w-full bg-violet-600 hover:bg-violet-700 text-white gap-2">
-                <Zap className="w-4 h-4" />
+              <Button className="w-full bg-indigo-600 hover:bg-indigo-500 text-white gap-2 text-sm h-9 rounded-lg">
+                <Zap className="w-3.5 h-3.5" />
                 Upgrade to Pro
               </Button>
             </Link>
             <Link href="/dashboard">
-              <Button className="w-full bg-white/10 hover:bg-white/20 text-white">
-                Back to Dashboard
+              <Button className="w-full bg-[#18181b] hover:bg-[#27272a] text-[#a1a1aa] text-sm h-9 rounded-lg border border-[#27272a]">
+                Back to dashboard
               </Button>
             </Link>
           </div>
-          <p className="text-gray-600 text-xs mt-4">₹299/month · Cancel anytime</p>
+          <p className="text-[#3f3f46] text-xs mt-4">₹299/month · Cancel anytime</p>
         </div>
       </div>
     );
@@ -73,7 +69,6 @@ export default function LiveblocksRoomProvider({
   return (
     <RoomProvider
       id={roomId}
-      authEndpoint={authEndpoint}
       initialPresence={{
         cursor: null,
         name: "",
@@ -90,10 +85,10 @@ export default function LiveblocksRoomProvider({
     >
       <ClientSideSuspense
         fallback={
-          <div className="min-h-screen bg-black flex items-center justify-center">
+          <div className="min-h-screen bg-[#0e0e10] flex items-center justify-center">
             <div className="text-center">
-              <Loader2 className="w-8 h-8 text-violet-400 animate-spin mx-auto mb-4" />
-              <p className="text-gray-400">Connecting to room...</p>
+              <Loader2 className="w-7 h-7 text-indigo-400 animate-spin mx-auto mb-3" />
+              <p className="text-[#52525b] text-sm">Connecting to room...</p>
             </div>
           </div>
         }
