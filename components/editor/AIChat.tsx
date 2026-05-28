@@ -20,17 +20,16 @@ Your behavior:
 - Keep responses concise and conversational (2-4 sentences max unless giving a problem)
 - If they want a new problem, give them one`;
 
+const INITIAL_MESSAGE =
+  "Hey! Ready to ace your placement interviews?\n\nI can help you in two ways:\n1. Mock Interview — I'll act as a real interviewer, ask you problems, and evaluate your answers\n2. Practice Mode — Pick a topic and difficulty, and we'll solve problems together with hints\n\nWhich one would you like? And what's your target company — product (Google/Microsoft/Amazon) or service (TCS/Infosys/Wipro)?";
+
 interface Props {
   isPro?: boolean;
 }
 
 export default function AIChat({ isPro = false }: Props) {
   const [messages, setMessages] = useState<Message[]>([
-    {
-      role: "assistant",
-      content:
-        "Hey! 👋 Ready to ace your placement interviews?\n\nI can help you in two ways:\n1️⃣ Mock Interview — I'll act as a real interviewer, ask you problems, and evaluate your answers\n2️⃣ Practice Mode — Pick a topic and difficulty, and we'll solve problems together with hints\n\nWhich one would you like? And what's your target company — product (Google/Microsoft/Amazon) or service (TCS/Infosys/Wipro)?",
-    },
+    { role: "assistant", content: INITIAL_MESSAGE },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -42,32 +41,21 @@ export default function AIChat({ isPro = false }: Props) {
 
   const sendMessage = async () => {
     if (!input.trim() || loading) return;
-
     const userMessage: Message = { role: "user", content: input.trim() };
     const newMessages = [...messages, userMessage];
     setMessages(newMessages);
     setInput("");
     setLoading(true);
-
     try {
       const res = await fetch("/api/ai", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "chat",
-          messages: newMessages,
-          systemPrompt: SYSTEM_PROMPT,
-        }),
+        body: JSON.stringify({ action: "chat", messages: newMessages, systemPrompt: SYSTEM_PROMPT }),
       });
-
       const data = await res.json();
-
       setMessages((prev) => [
         ...prev,
-        {
-          role: "assistant",
-          content: data.result || "Sorry, I had trouble responding. Please try again.",
-        },
+        { role: "assistant", content: data.result || "Sorry, I had trouble responding. Please try again." },
       ]);
     } catch {
       setMessages((prev) => [
@@ -80,76 +68,71 @@ export default function AIChat({ isPro = false }: Props) {
   };
 
   const resetChat = () => {
-    setMessages([
-      {
-        role: "assistant",
-        content:
-          "Hey! 👋 Ready to ace your placement interviews?\n\nI can help you in two ways:\n1️⃣ Mock Interview — I'll act as a real interviewer, ask you problems, and evaluate your answers\n2️⃣ Practice Mode — Pick a topic and difficulty, and we'll solve problems together with hints\n\nWhich one would you like? And what's your target company — product (Google/Microsoft/Amazon) or service (TCS/Infosys/Wipro)?",
-      },
-    ]);
+    setMessages([{ role: "assistant", content: INITIAL_MESSAGE }]);
     setInput("");
   };
 
-  // Free plan — show locked state
+  // Locked state for free users
   if (!isPro) {
     return (
-      <div className="flex flex-col h-full min-h-0 bg-gray-950 items-center justify-center p-6 text-center overflow-hidden">
-        <div className="w-14 h-14 bg-violet-600/20 rounded-2xl flex items-center justify-center mb-4">
-          <Bot className="w-7 h-7 text-violet-400" />
+      <div className="flex flex-col h-full bg-[#0e0e10] items-center justify-center p-6 text-center">
+        <div className="w-12 h-12 bg-[#1e1b4b] rounded-xl flex items-center justify-center mb-3">
+          <Bot className="w-6 h-6 text-indigo-400" />
         </div>
-        <div className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center mb-4 -mt-5 ml-8">
-          <Lock className="w-4 h-4 text-gray-400" />
+        <div className="w-7 h-7 bg-[#18181b] border border-[#27272a] rounded-full flex items-center justify-center -mt-4 ml-8 mb-4">
+          <Lock className="w-3.5 h-3.5 text-[#52525b]" />
         </div>
-        <h3 className="text-white font-semibold text-base mb-2">AI Interviewer</h3>
-        <p className="text-gray-500 text-xs leading-relaxed mb-5 max-w-[200px]">
-          Practice mock interviews with an AI interviewer. Available on Pro plan.
+        <h3 className="text-[#fafafa] font-medium text-sm mb-1.5">AI Interviewer</h3>
+        <p className="text-[#52525b] text-xs leading-relaxed mb-5 max-w-[180px]">
+          Practice mock interviews with AI. Available on the Pro plan.
         </p>
         <Link href="/#pricing">
-          <Button size="sm" className="bg-violet-600 hover:bg-violet-700 text-white gap-2 text-xs">
+          <Button size="sm" className="bg-indigo-600 hover:bg-indigo-500 text-white gap-1.5 text-xs h-8 px-3 rounded-lg transition-all duration-150">
             <Zap className="w-3 h-3" />
             Upgrade to Pro
           </Button>
         </Link>
-        <p className="text-gray-700 text-xs mt-3">₹299/month · Cancel anytime</p>
+        <p className="text-[#3f3f46] text-xs mt-3">₹299/month · Cancel anytime</p>
       </div>
     );
   }
 
-  // Pro plan — full chat
+  // Full chat for Pro users
   return (
-    <div className="flex flex-col h-full bg-gray-950">
+    <div className="flex flex-col h-full bg-[#0e0e10]">
+
       {/* Header */}
-      <div className="h-10 border-b border-white/10 flex items-center px-4 justify-between flex-shrink-0">
+      <div className="h-9 border-b border-[#27272a] flex items-center px-4 justify-between flex-shrink-0">
         <div className="flex items-center gap-2">
-          <Bot className="w-4 h-4 text-violet-400" />
-          <span className="text-gray-400 text-sm font-medium">AI Interviewer</span>
-          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+          <Bot className="w-3.5 h-3.5 text-indigo-400" />
+          <span className="text-[#71717a] text-xs font-medium">AI Interviewer</span>
+          <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
         </div>
         <button
           onClick={resetChat}
-          className="text-gray-500 hover:text-gray-300 transition-colors"
-          title="New Interview"
+          className="text-[#3f3f46] hover:text-[#71717a] transition-colors"
+          title="New interview"
         >
-          <RefreshCw className="w-3.5 h-3.5" />
+          <RefreshCw className="w-3 h-3" />
         </button>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-3">
+      <div className="flex-1 overflow-y-auto p-3 space-y-3 min-h-0">
         {messages.map((msg, i) => (
           <div key={i} className={`flex gap-2 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
-            <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
-              msg.role === "assistant" ? "bg-violet-600/30" : "bg-blue-600/30"
+            <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
+              msg.role === "assistant" ? "bg-[#1e1b4b]" : "bg-[#0c4a6e]"
             }`}>
               {msg.role === "assistant"
-                ? <Bot className="w-3 h-3 text-violet-400" />
-                : <User className="w-3 h-3 text-blue-400" />
+                ? <Bot className="w-2.5 h-2.5 text-indigo-400" />
+                : <User className="w-2.5 h-2.5 text-cyan-400" />
               }
             </div>
-            <div className={`max-w-[80%] rounded-2xl px-3 py-2 text-xs leading-relaxed whitespace-pre-wrap ${
+            <div className={`max-w-[82%] rounded-xl px-3 py-2 text-xs leading-relaxed whitespace-pre-wrap ${
               msg.role === "assistant"
-                ? "bg-gray-800 text-gray-200 rounded-tl-sm"
-                : "bg-violet-600 text-white rounded-tr-sm"
+                ? "bg-[#18181b] text-[#a1a1aa] rounded-tl-sm border border-[#27272a]"
+                : "bg-indigo-600 text-white rounded-tr-sm"
             }`}>
               {msg.content}
             </div>
@@ -158,11 +141,11 @@ export default function AIChat({ isPro = false }: Props) {
 
         {loading && (
           <div className="flex gap-2">
-            <div className="w-6 h-6 rounded-full bg-violet-600/30 flex items-center justify-center flex-shrink-0">
-              <Bot className="w-3 h-3 text-violet-400" />
+            <div className="w-5 h-5 rounded-full bg-[#1e1b4b] flex items-center justify-center flex-shrink-0">
+              <Bot className="w-2.5 h-2.5 text-indigo-400" />
             </div>
-            <div className="bg-gray-800 rounded-2xl rounded-tl-sm px-3 py-2">
-              <Loader2 className="w-3 h-3 text-violet-400 animate-spin" />
+            <div className="bg-[#18181b] border border-[#27272a] rounded-xl rounded-tl-sm px-3 py-2">
+              <Loader2 className="w-3 h-3 text-indigo-400 animate-spin" />
             </div>
           </div>
         )}
@@ -170,7 +153,7 @@ export default function AIChat({ isPro = false }: Props) {
       </div>
 
       {/* Input */}
-      <div className="p-3 border-t border-white/10 flex-shrink-0">
+      <div className="p-3 border-t border-[#27272a] flex-shrink-0">
         <div className="flex gap-2">
           <input
             type="text"
@@ -179,18 +162,19 @@ export default function AIChat({ isPro = false }: Props) {
             onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && sendMessage()}
             placeholder="Type your message..."
             disabled={loading}
-            className="flex-1 bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-xs text-white placeholder:text-gray-500 focus:outline-none focus:border-violet-500 transition-colors"
+            className="flex-1 bg-[#18181b] border border-[#27272a] rounded-lg px-3 py-2 text-xs text-[#fafafa] placeholder:text-[#3f3f46] focus:outline-none focus:border-indigo-500 transition-colors duration-150"
           />
           <Button
             onClick={sendMessage}
             disabled={!input.trim() || loading}
             size="sm"
-            className="bg-violet-600 hover:bg-violet-700 text-white px-3 rounded-xl"
+            className="bg-indigo-600 hover:bg-indigo-500 text-white px-2.5 rounded-lg h-8 transition-all duration-150"
           >
             <Send className="w-3 h-3" />
           </Button>
         </div>
       </div>
+
     </div>
   );
 }

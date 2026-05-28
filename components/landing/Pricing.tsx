@@ -11,17 +11,17 @@ const plans = [
   {
     name: "Free",
     price: "₹0",
-    description: "Perfect for students",
+    description: "Perfect for students getting started",
     features: [
       { text: "3 rooms per month", included: true },
       { text: "2 participants per room", included: true },
       { text: "8 programming languages", included: true },
       { text: "Code execution", included: true },
+      { text: "AI Interviewer", included: true },
       { text: "Video calling", included: false },
-      { text: "AI Interviewer", included: false },
       { text: "Session recordings", included: false },
     ],
-    cta: "Get Started Free",
+    cta: "Get started free",
     href: "/sign-up",
     highlighted: false,
     planKey: "free",
@@ -29,14 +29,14 @@ const plans = [
   {
     name: "Pro",
     price: "₹299",
-    description: "For serious interview prep",
+    description: "For serious interview preparation",
     features: [
       { text: "Unlimited rooms", included: true },
       { text: "5 participants per room", included: true },
       { text: "10+ programming languages", included: true },
       { text: "Code execution", included: true },
-      { text: "Video calling", included: true },
       { text: "AI Interviewer", included: true },
+      { text: "Video calling", included: true },
       { text: "Session recordings", included: true },
     ],
     cta: "Start Pro",
@@ -55,94 +55,97 @@ export default function Pricing({ userPlan }: Props) {
   const [showUpgrade, setShowUpgrade] = useState(false);
 
   return (
-    <section id="pricing" className="py-24 px-4">
+    <section id="pricing" className="py-24 px-4 bg-[#0e0e10]">
       <UpgradeModal open={showUpgrade} onClose={() => setShowUpgrade(false)} />
 
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-4xl mx-auto">
+
         {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Simple{" "}
-            <span className="bg-gradient-to-r from-violet-400 to-blue-400 bg-clip-text text-transparent">
-              pricing
-            </span>
+          <p className="text-xs text-[#52525b] uppercase tracking-widest mb-3">Pricing</p>
+          <h2 className="text-3xl md:text-4xl font-medium text-[#fafafa] tracking-tight mb-3">
+            Simple, honest pricing
           </h2>
-          <p className="text-gray-400 text-lg">
+          <p className="text-[#71717a] text-base">
             Start free. Upgrade when you need more.
           </p>
         </div>
 
         {/* Plans */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {plans.map((plan) => {
             const isCurrentPlan = isSignedIn && userPlan === plan.planKey;
-            const isProAndUserIsFree =
-              plan.planKey === "pro" && isSignedIn && userPlan === "free";
-            const isProAndUserIsPro =
-              plan.planKey === "pro" && isSignedIn && userPlan === "pro";
-            const isFreeAndUserIsPro =
-              plan.planKey === "free" && isSignedIn && userPlan === "pro";
+            const isProAndUserIsFree = plan.planKey === "pro" && isSignedIn && userPlan === "free";
+            const isProAndUserIsPro = plan.planKey === "pro" && isSignedIn && userPlan === "pro";
+            const isFreeAndUserIsPro = plan.planKey === "free" && isSignedIn && userPlan === "pro";
 
             return (
               <div
                 key={plan.name}
-                className={`rounded-2xl p-8 border relative ${
+                className={`rounded-xl p-7 border relative flex flex-col transition-all duration-200 ${
                   plan.highlighted
-                    ? "bg-violet-600/20 border-violet-500/50"
-                    : "bg-white/5 border-white/10"
-                } ${isCurrentPlan ? "ring-2 ring-violet-500" : ""}`}
+                    ? "bg-[#18181b] border-indigo-500/50"
+                    : "bg-[#18181b] border-[#27272a]"
+                } ${isCurrentPlan ? "ring-1 ring-indigo-500" : ""}`}
               >
-                {/* Badges */}
+                {/* Most popular badge */}
                 {plan.highlighted && !isCurrentPlan && (
-                  <span className="bg-violet-600 text-white text-xs px-3 py-1 rounded-full mb-4 inline-block">
-                    Most Popular
-                  </span>
-                )}
-                {isCurrentPlan && (
-                  <span className="bg-green-600 text-white text-xs px-3 py-1 rounded-full mb-4 inline-block">
-                    ✓ Your Current Plan
-                  </span>
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <span className="bg-indigo-600 text-white text-xs px-3 py-1 rounded-full font-medium">
+                      Most popular
+                    </span>
+                  </div>
                 )}
 
-                <h3 className="text-white font-bold text-2xl mb-1">
-                  {plan.name}
-                </h3>
-                <p className="text-gray-400 text-sm mb-4">
-                  {plan.description}
-                </p>
-                <div className="text-4xl font-bold text-white mb-6">
-                  {plan.price}
-                  <span className="text-lg text-gray-400 font-normal">
-                    /month
-                  </span>
+                {/* Current plan badge */}
+                {isCurrentPlan && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <span className="bg-[#052e16] text-green-400 border border-green-500/30 text-xs px-3 py-1 rounded-full">
+                      Your current plan
+                    </span>
+                  </div>
+                )}
+
+                {/* Plan name & price */}
+                <div className="mb-6">
+                  <h3 className="text-[#fafafa] font-medium text-lg mb-1">{plan.name}</h3>
+                  <p className="text-[#52525b] text-sm mb-4">{plan.description}</p>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-3xl font-medium text-[#fafafa]">{plan.price}</span>
+                    <span className="text-[#52525b] text-sm">/month</span>
+                  </div>
                 </div>
 
-                <ul className="space-y-3 mb-8">
+                {/* Divider */}
+                <div className="h-px bg-[#27272a] mb-6" />
+
+                {/* Features */}
+                <ul className="space-y-3 mb-8 flex-1">
                   {plan.features.map((feature) => (
                     <li
                       key={feature.text}
                       className={`flex items-center gap-3 text-sm ${
-                        feature.included ? "text-gray-300" : "text-gray-600"
+                        feature.included ? "text-[#a1a1aa]" : "text-[#3f3f46]"
                       }`}
                     >
                       {feature.included ? (
-                        <Check className="w-4 h-4 text-violet-400 flex-shrink-0" />
+                        <Check className="w-4 h-4 text-indigo-400 flex-shrink-0" />
                       ) : (
-                        <X className="w-4 h-4 text-gray-600 flex-shrink-0" />
+                        <X className="w-4 h-4 text-[#3f3f46] flex-shrink-0" />
                       )}
                       {feature.text}
                     </li>
                   ))}
                 </ul>
 
-                {/* CTA Button Logic */}
+                {/* CTA */}
                 {!isSignedIn && (
                   <Link href={plan.href}>
                     <Button
-                      className={`w-full ${
+                      className={`w-full h-10 text-sm rounded-lg transition-all duration-150 ${
                         plan.highlighted
-                          ? "bg-violet-600 hover:bg-violet-700 text-white"
-                          : "bg-white/10 hover:bg-white/20 text-white"
+                          ? "bg-indigo-600 hover:bg-indigo-500 text-white"
+                          : "bg-[#27272a] hover:bg-[#3f3f46] text-[#fafafa]"
                       }`}
                     >
                       {plan.cta}
@@ -151,18 +154,15 @@ export default function Pricing({ userPlan }: Props) {
                 )}
 
                 {isProAndUserIsPro && (
-                  <Button
-                    disabled
-                    className="w-full bg-green-600/20 text-green-400 border border-green-500/30 cursor-default"
-                  >
-                    ✓ Active Plan
+                  <Button disabled className="w-full h-10 text-sm rounded-lg bg-[#052e16] text-green-400 border border-green-500/30 cursor-default">
+                    Active plan
                   </Button>
                 )}
 
                 {isFreeAndUserIsPro && (
                   <Link href="/dashboard">
-                    <Button className="w-full bg-white/10 hover:bg-white/20 text-white">
-                      Go to Dashboard
+                    <Button className="w-full h-10 text-sm rounded-lg bg-[#27272a] hover:bg-[#3f3f46] text-[#fafafa]">
+                      Go to dashboard
                     </Button>
                   </Link>
                 )}
@@ -170,7 +170,7 @@ export default function Pricing({ userPlan }: Props) {
                 {isProAndUserIsFree && (
                   <Button
                     onClick={() => setShowUpgrade(true)}
-                    className="w-full bg-violet-600 hover:bg-violet-700 text-white"
+                    className="w-full h-10 text-sm rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition-all duration-150"
                   >
                     Upgrade to Pro
                   </Button>
@@ -178,8 +178,8 @@ export default function Pricing({ userPlan }: Props) {
 
                 {isSignedIn && userPlan === "free" && plan.planKey === "free" && (
                   <Link href="/dashboard">
-                    <Button className="w-full bg-white/10 hover:bg-white/20 text-white">
-                      ✓ Current Plan — Go to Dashboard
+                    <Button className="w-full h-10 text-sm rounded-lg bg-[#27272a] hover:bg-[#3f3f46] text-[#fafafa]">
+                      Go to dashboard
                     </Button>
                   </Link>
                 )}
@@ -187,6 +187,7 @@ export default function Pricing({ userPlan }: Props) {
             );
           })}
         </div>
+
       </div>
     </section>
   );

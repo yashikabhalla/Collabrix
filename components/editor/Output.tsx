@@ -10,47 +10,44 @@ interface Props {
 
 export default function Output({ output, isRunning, hasError }: Props) {
   return (
-    <div className="h-full flex flex-col bg-gray-950">
-      
+    <div className="h-full flex flex-col bg-[#0e0e10]">
+
       {/* Header */}
-      <div className="h-10 border-b border-white/10 flex items-center px-4 gap-2">
-        <Terminal className="w-4 h-4 text-gray-400" />
-        <span className="text-gray-400 text-sm font-medium">Output</span>
+      <div className="h-9 border-b border-[#27272a] flex items-center px-4 gap-2 flex-shrink-0">
+        <Terminal className="w-3.5 h-3.5 text-[#52525b]" />
+        <span className="text-[#52525b] text-xs font-medium">Output</span>
         {output && !isRunning && (
           <div className="ml-auto">
             {hasError ? (
-              <XCircle className="w-4 h-4 text-red-400" />
+              <XCircle className="w-3.5 h-3.5 text-red-400" />
             ) : (
-              <CheckCircle className="w-4 h-4 text-green-400" />
+              <CheckCircle className="w-3.5 h-3.5 text-green-400" />
             )}
           </div>
         )}
       </div>
 
-      {/* Output Content */}
-      <div className="flex-1 p-4 overflow-auto">
+      {/* Content */}
+      <div className="flex-1 p-3 overflow-auto">
         {isRunning ? (
-          <div className="flex items-center gap-3 text-gray-400">
-            <Loader2 className="w-4 h-4 animate-spin text-violet-400" />
-            <span className="text-sm">Running your code...</span>
+          <div className="flex items-center gap-2 text-[#52525b]">
+            <Loader2 className="w-3.5 h-3.5 animate-spin text-indigo-400" />
+            <span className="text-xs">Running...</span>
           </div>
         ) : output ? (
-          <pre
-            className={`text-sm font-mono whitespace-pre-wrap leading-relaxed ${
-              hasError ? "text-red-400" : "text-green-400"
-            }`}
-          >
+          <pre className={`text-xs font-mono whitespace-pre-wrap leading-relaxed ${
+            hasError ? "text-red-400" : "text-green-400"
+          }`}>
             {output}
           </pre>
         ) : (
-          <div className="text-center mt-12">
-            <Terminal className="w-8 h-8 text-gray-700 mx-auto mb-3" />
-            <p className="text-gray-600 text-sm">
-              Click "Run Code" to see output
-            </p>
+          <div className="flex flex-col items-center justify-center h-full gap-2 opacity-40">
+            <Terminal className="w-6 h-6 text-[#52525b]" />
+            <p className="text-[#52525b] text-xs">Run your code to see output</p>
           </div>
         )}
       </div>
+
     </div>
   );
 }

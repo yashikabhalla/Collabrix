@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Code2, ArrowRight, Calendar } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -12,60 +11,71 @@ interface Room {
   createdAt: string;
 }
 
-const languageColors: Record<string, string> = {
-  javascript: "bg-yellow-400/10 text-yellow-400 border-yellow-400/20",
-  typescript: "bg-blue-400/10 text-blue-400 border-blue-400/20",
-  python: "bg-green-400/10 text-green-400 border-green-400/20",
-  java: "bg-orange-400/10 text-orange-400 border-orange-400/20",
-  cpp: "bg-violet-400/10 text-violet-400 border-violet-400/20",
-  c: "bg-gray-400/10 text-gray-400 border-gray-400/20",
-  go: "bg-cyan-400/10 text-cyan-400 border-cyan-400/20",
-  rust: "bg-red-400/10 text-red-400 border-red-400/20",
+const languageAccents: Record<string, { color: string; bg: string }> = {
+  javascript: { color: "#f59e0b", bg: "#451a03" },
+  typescript: { color: "#06b6d4", bg: "#0c4a6e" },
+  python:     { color: "#22c55e", bg: "#052e16" },
+  java:       { color: "#fb923c", bg: "#431407" },
+  cpp:        { color: "#6366f1", bg: "#1e1b4b" },
+  c:          { color: "#a1a1aa", bg: "#27272a" },
+  go:         { color: "#22d3ee", bg: "#0c4a6e" },
+  rust:       { color: "#f87171", bg: "#450a0a" },
 };
 
 export default function RoomCard({ room }: { room: Room }) {
   const router = useRouter();
+  const accent = languageAccents[room.language] || languageAccents.javascript;
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-IN", {
+  const formatDate = (dateString: string) =>
+    new Date(dateString).toLocaleDateString("en-IN", {
       day: "numeric",
       month: "short",
       year: "numeric",
     });
-  };
 
   return (
-    <div className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 hover:border-violet-500/30 transition-all duration-300 group">
+    <div className="bg-[#18181b] border border-[#27272a] rounded-xl p-5 hover:border-[#3f3f46] transition-all duration-200 group flex flex-col gap-4">
 
-      {/* Icon + Language */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="w-10 h-10 bg-violet-600/20 rounded-xl flex items-center justify-center">
-          <Code2 className="w-5 h-5 text-violet-400" />
+      {/* Top row — icon + language badge */}
+      <div className="flex items-center justify-between">
+        <div
+          className="w-9 h-9 rounded-lg flex items-center justify-center"
+          style={{ background: accent.bg }}
+        >
+          <Code2 className="w-4 h-4" style={{ color: accent.color }} />
         </div>
-        <Badge className={`${languageColors[room.language] || languageColors.javascript} border text-xs`}>
+        <span
+          className="text-xs px-2.5 py-0.5 rounded-full border font-medium"
+          style={{
+            color: accent.color,
+            background: accent.bg,
+            borderColor: accent.color + "33",
+          }}
+        >
           {room.language}
-        </Badge>
+        </span>
       </div>
 
-      {/* Room Name */}
-      <h3 className="text-white font-semibold text-lg mb-2 group-hover:text-violet-300 transition-colors">
-        {room.name}
-      </h3>
-
-      {/* Date */}
-      <div className="flex items-center gap-2 text-gray-500 text-sm mb-6">
-        <Calendar className="w-3 h-3" />
-        {formatDate(room.createdAt)}
+      {/* Room name */}
+      <div>
+        <h3 className="text-[#fafafa] font-medium text-[15px] mb-1 group-hover:text-indigo-300 transition-colors duration-150">
+          {room.name}
+        </h3>
+        <div className="flex items-center gap-1.5 text-[#52525b] text-xs">
+          <Calendar className="w-3 h-3" />
+          {formatDate(room.createdAt)}
+        </div>
       </div>
 
-      {/* Join Button */}
+      {/* Join button */}
       <Button
         onClick={() => router.push(`/room/${room.id}`)}
-        className="w-full bg-violet-600/20 hover:bg-violet-600 text-violet-300 hover:text-white border border-violet-500/30 transition-all duration-300 group/btn"
+        className="w-full h-9 text-sm rounded-lg bg-[#27272a] hover:bg-indigo-600 text-[#a1a1aa] hover:text-white border border-[#3f3f46] hover:border-indigo-500 transition-all duration-200 gap-2 group/btn mt-auto"
       >
-        Join Room
-        <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
+        Join room
+        <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 transition-transform duration-150" />
       </Button>
+
     </div>
   );
 }
