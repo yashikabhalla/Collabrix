@@ -81,7 +81,7 @@ export default function CollaborativeEditor({
       onMouseLeave={handleMouseLeave}
     >
       <Editor
-        height="100vh"
+        height="100%"
         language={languageMap[language] || "javascript"}
         value={code}
         onChange={handleChange}
@@ -123,6 +123,12 @@ fastScrollSensitivity: 5,
           bracketPairColorization: { enabled: true },
           formatOnPaste: true,
           formatOnType: true,
+          scrollbar: {
+  vertical: "visible",
+  horizontal: "visible",
+  verticalScrollbarSize: 8,
+  horizontalScrollbarSize: 8,
+},
         }}
       />
     </div>
