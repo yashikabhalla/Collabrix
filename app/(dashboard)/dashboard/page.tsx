@@ -82,7 +82,7 @@ export default async function DashboardPage() {
             <span className="text-[#52525b] text-sm hidden md:block">
               Hey, {clerkUser.firstName}
             </span>
-            <UserButton afterSignOutUrl="/" />
+            <UserButton />
           </div>
         </div>
       </nav>

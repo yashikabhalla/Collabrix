@@ -185,7 +185,7 @@ export default function Toolbar({
           )}
         </Button>
 
-        <UserButton afterSignOutUrl="/" />
+        <UserButton />
       </div>
     </div>
   );
