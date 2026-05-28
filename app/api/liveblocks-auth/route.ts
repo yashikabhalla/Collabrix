@@ -46,7 +46,7 @@ export async function POST(req: Request) {
  
         // Check if this user is already in the room (rejoining)
         const alreadyInRoom = activeUsers.data.some(
-          (u: { id: string }) => u.id === userId
+          (u: { id: string | null }) => u.id === userId
         );
  
         // Only block if it's a NEW participant and limit is reached
