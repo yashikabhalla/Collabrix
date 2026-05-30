@@ -1,8 +1,8 @@
 Readme · MD
 <div align="center">
-# Collabrix 🚀
+## Collabrix 🚀
  
-### AI-Powered Real-Time Collaborative Coding Platform for Placement Preparation
+AI-Powered Real-Time Collaborative Coding Platform for Placement Preparation
 
  
 **[🌐 Live Demo](https://collabrix-two-kappa.vercel.app)** — Click **"Launch Demo"** for instant access, no signup required.
