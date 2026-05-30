@@ -1,36 +1,196 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Collabrix 🚀
+AI-Powered Real-Time Collaborative Coding Platform for Placement Preparation
 
-## Getting Started
 
-First, run the development server:
+🌐 Live Demo
+https://collabrix-two-kappa.vercel.app — Click "Launch Demo" for instant access, no signup required.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+✨ What is Collabrix?
+Collabrix is a full-stack collaborative coding platform built for technical interview preparation. Multiple users can join a shared coding room and code together in real-time, while an AI interviewer guides them through DSA problems — just like a real placement interview.
+Built for: Computer Science / Engineering students preparing for product company placements (Google, Microsoft, Amazon, Flipkart).
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+🔥 Core Features
+👨‍💻 Real-Time Collaborative Editor
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Monaco Editor (same as VS Code) with live multi-cursor support
+Cursor tracking with user names and colors
+Presence indicators showing who is online
+Sub-50ms sync latency powered by Liveblocks CRDT
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+🤖 AI Interviewer (Chatbot)
 
-## Learn More
+Powered by Groq API (Llama 3.1) — extremely fast responses
+Choose between Mock Interview or Practice Mode
+AI asks DSA problems, gives hints, evaluates solutions
+Remembers conversation context throughout the session
+Tailors difficulty based on your target company
 
-To learn more about Next.js, take a look at the following resources:
+▶️ Code Execution
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Supports 10+ programming languages
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+JavaScript  TypeScript  Python  Java  C++  C  Go  Rust  Kotlin  Swift  PHP  Ruby
 
-## Deploy on Vercel
+Powered by JDoodle API
+Output displayed in real-time below the editor
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+📹 Video Calling (Pro)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Video Calling with Jitsi Meet integration
+No external app needed — runs inside the browser
+Live notification when a collaborator starts a call
+
+🔐 Authentication
+
+Secure sign-up/sign-in powered by Clerk
+Social login (Google) supported
+Session management handled automatically
+
+💳 Subscription Plans
+
+Free: 3 rooms/month, 2 participants, 8 languages
+Pro (₹299/month): Unlimited rooms, 5 participants, 10+ languages, video calling, session recordings, AI Interviewer
+Payments via Razorpay (supports UPI, cards, net banking)
+
+
+🛠️ Tech Stack
+┌─────────────────────┬──────────────────────────────────────────┐
+│ Layer               │ Technology                               │
+├─────────────────────┼──────────────────────────────────────────┤
+│ Framework           │ Next.js 16, React 18, TypeScript         │
+│ Styling             │ Tailwind CSS, shadcn/ui                  │
+│ Code Editor         │ Monaco Editor                            │
+│ Real-Time Sync      │ Liveblocks (CRDT-based, <50ms latency)   │
+│ AI                  │ Groq API — Llama 3.1 8B Instant          │
+│ Video Calling       │ Jitsi Meet SDK                           │
+│ Authentication      │ Clerk                                    │
+│ Database            │ PostgreSQL + Prisma ORM                  │
+│ Payments            │ Razorpay                                 │
+│ Code Execution      │ JDoodle API                              │
+│ Deployment          │ Vercel                                   │
+└─────────────────────┴──────────────────────────────────────────┘
+
+💡 Free vs Pro
+┌──────────────────────────┬──────────────┬──────────────────┐
+│ Feature                  │ Free         │ Pro              │
+├──────────────────────────┼──────────────┼──────────────────┤
+│ Rooms per month          │ 3            │ Unlimited        │
+│ Participants per room    │ 2            │ 5                │
+│ Programming languages    │ 8            │ 10+              │
+│ Code execution           │ ✅           │ ✅               │
+│ AI Interviewer           │ ✅           │ ✅               │
+│ Video calling            │ ❌           │ ✅               │
+│ Session recordings       │ ❌           │ ✅               │
+│ Price                    │ ₹0/month     │ ₹299/month       │
+└──────────────────────────┴──────────────┴──────────────────┘
+
+📁 Project Structure
+collabrix/
+├── app/
+│   ├── (auth)/                  # Sign in / Sign up pages
+│   ├── (dashboard)/             # Dashboard page
+│   ├── api/
+│   │   ├── ai/                  # Groq AI chatbot endpoint
+│   │   ├── execute/             # Code execution endpoint
+│   │   ├── liveblocks-auth/     # Liveblocks auth endpoint
+│   │   ├── payment/             # Razorpay create-order + verify
+│   │   ├── rooms/               # Room CRUD API
+│   │   ├── solved/              # Solved problems tracking
+│   │   └── video-room/          # Jitsi video room API
+│   ├── demo/                    # Demo mode (no auth required)
+│   └── room/[roomId]/           # Individual room page
+├── components/
+│   ├── dashboard/               # Dashboard UI components
+│   ├── editor/                  # Room editor components
+│   │   ├── AIChat.tsx           # AI Interviewer chatbot
+│   │   ├── CollaborativeEditor.tsx
+│   │   ├── LiveCursors.tsx
+│   │   ├── Output.tsx
+│   │   ├── RoomClient.tsx
+│   │   ├── Toolbar.tsx
+│   │   └── VideoCall.tsx
+│   └── landing/                 # Landing page sections
+├── lib/
+│   ├── db.ts                    # Prisma client
+│   └── plans.ts                 # Free/Pro plan limits
+├── prisma/
+│   └── schema.prisma            # Database schema
+└── liveblocks.config.ts         # Liveblocks types config
+
+🚀 Getting Started
+Prerequisites
+
+Node.js 18+
+PostgreSQL database (or use Neon / Supabase free tier)
+Accounts on: Clerk, Liveblocks, Groq, Razorpay, JDoodle
+
+1. Clone the repository
+bashgit clone https://github.com/yashikabhalla/collabrix.git
+cd collabrix
+npm install
+2. Set up environment variables
+Create .env.local:
+env# Clerk Authentication
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+CLERK_SECRET_KEY=sk_test_...
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/dashboard
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/dashboard
+
+# Database
+DATABASE_URL=postgresql://...
+
+# Liveblocks
+LIVEBLOCKS_SECRET_KEY=sk_...
+NEXT_PUBLIC_LIVEBLOCKS_PUBLIC_KEY=pk_...
+
+# Groq AI
+GROQ_API_KEY=gsk_...
+
+# Razorpay Payments
+RAZORPAY_KEY_ID=rzp_test_...
+RAZORPAY_KEY_SECRET=...
+NEXT_PUBLIC_RAZORPAY_KEY_ID=rzp_test_...
+
+# JDoodle Code Execution
+JDOODLE_CLIENT_ID=...
+JDOODLE_CLIENT_SECRET=...
+3. Set up the database
+bashnpx prisma db push
+npx prisma generate
+4. Run the development server
+bashnpm run dev
+Open http://localhost:3000 🎉
+
+⚙️ How It Works
+User creates or joins a room
+            │
+            ▼
+   Real-Time Editor (Liveblocks)
+   cursors · presence · sync <50ms
+            │
+            ▼
+   Code Execution (JDoodle)
+   10+ languages · output below editor
+            │
+            ▼
+   AI Interviewer (Groq)
+   mock interview · hints · evaluation
+            │
+            ▼
+   Video Call (Jitsi) — Pro only
+   face-to-face mock interview
+
+🔧 Key Technical Decisions
+┌──────────────────┬────────────────────────────────────────────────────┐
+│ Decision         │ Reason                                             │
+├──────────────────┼────────────────────────────────────────────────────┤
+│ Liveblocks       │ Production CRDT sync, <50ms, no rebuild needed     │
+│ Groq             │ Free tier, <200ms response, Llama 3.1 quality      │
+│ Jitsi            │ Open-source, browser-native, no external app       │
+│ Clerk            │ Handles JWT + OAuth — saves weeks of work          │
+│ Razorpay         │ Indian market standard, UPI + cards support        │
+│ Monaco Editor    │ Same as VS Code — familiar to all developers       │
+└──────────────────┴────────────────────────────────────────────────────┘
+
