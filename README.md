@@ -1,13 +1,13 @@
-Readme · MD
-<div align="center">
-## Collabrix 🚀
+# Collabrix 🚀
  
-AI-Powered Real-Time Collaborative Coding Platform for Placement Preparation
+### AI-Powered Real-Time Collaborative Coding Platform for Placement Preparation
+ 
 
+# Live Demo
+**[🌐 Live Demo](https://collabrix-two-kappa.vercel.app)** — 
+Click **"Launch Demo"** for instant access, no signup required.
  
-**[🌐 Live Demo](https://collabrix-two-kappa.vercel.app)** — Click **"Launch Demo"** for instant access, no signup required.
- 
-</div>
+
 ---
  
 ## 📖 What is Collabrix?
@@ -226,9 +226,9 @@ User creates or joins a room
 ---
 
  
-## 📜 License
+## 📜 Built By
  
-MIT © [Yashika Bhalla](https://github.com/yashikabhalla)
+ © [Yashika Bhalla](https://github.com/yashikabhalla)
  
 ---
  
@@ -236,7 +236,5 @@ MIT © [Yashika Bhalla](https://github.com/yashikabhalla)
 **Built with ❤️ for placement preparation**
  
 [🌐 Live Demo](https://collabrix-two-kappa.vercel.app) &nbsp;·&nbsp;
-[🐛 Report Bug](https://github.com/yashikabhalla/collabrix/issues) &nbsp;·&nbsp;
-[✨ Request Feature](https://github.com/yashikabhalla/collabrix/issues)
  
 </div>
