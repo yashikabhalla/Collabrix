@@ -17,7 +17,7 @@ const plans = [
       { text: "2 participants per room", included: true },
       { text: "8 programming languages", included: true },
       { text: "Code execution", included: true },
-      { text: "AI Interviewer", included: true },
+      { text: "AI Interviewer", included: false },
       { text: "Video calling", included: false },
       { text: "Session recordings", included: false },
     ],

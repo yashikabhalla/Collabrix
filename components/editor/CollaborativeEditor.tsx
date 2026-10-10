@@ -3,6 +3,7 @@
 import { useEffect, useCallback } from "react";
 import { useStorage, useMutation, useMyPresence } from "@/liveblocks.config";
 import Editor from "@monaco-editor/react";
+import type * as Monaco from "monaco-editor";
 
 interface Props {
   language: string;
@@ -88,7 +89,7 @@ export default function CollaborativeEditor({
         theme="vs-dark"
         onMount={(editor) => {
           // Track mouse inside Monaco editor
-          editor.onMouseMove((e) => {
+          editor.onMouseMove((e: Monaco.editor.IEditorMouseEvent) => {
             if (e.event) {
               updatePresence({
                 cursor: {
