@@ -210,20 +210,19 @@ face-to-face mock interviews
 ```
  
 ---
- 
+
 ## 🔧 Key Technical Decisions
- 
+
 | Decision | Reason |
 |---|---|
-| **Liveblocks** | Production CRDT sync, <50ms latency, no rebuild needed |
-| **Groq** | Free tier, <200ms response time, Llama 3.1 quality |
-| **Jitsi** | Open-source, browser-native, no external app required |
-| **Clerk** | Handles JWT + OAuth out of the box — saves weeks |
-| **Razorpay** | Indian market standard, supports UPI + cards |
-| **Monaco Editor** | Same editor as VS Code — familiar to all developers |
- 
----
+| **Liveblocks** | Managed real-time collaboration with CRDT-based synchronization and presence support |
+| **Groq** | Fast inference API with an OpenAI-compatible chat-completions interface |
+| **Jitsi** | Browser-based video calling without requiring a separate application |
+| **Clerk** | Managed authentication with social login and secure user identity management |
+| **Razorpay** | Integrated Indian payment gateway supporting UPI and card payments |
+| **Monaco Editor** | VS Code's underlying editor technology, providing a familiar browser-based coding experience |
 
+---
  
 ## 📜 Built By
  
@@ -232,7 +231,7 @@ face-to-face mock interviews
 ---
  
 <div align="center">
-**Built with ❤️ for placement preparation**
+**Built with ❤️**
  
 [🌐 Live Demo](https://collabrix-two-kappa.vercel.app) &nbsp;·&nbsp;
  
