@@ -26,7 +26,7 @@ Collabrix is a full-stack collaborative coding platform built for technical inte
 - Presence indicators showing who is online
 
 ### 🤖 AI Interviewer (Chatbot)
-- Powered by **Groq API (Llama 3.1)** — extremely fast responses
+- Powered by the Groq API with GPT-OSS-20B for fast LLM inference
 - Choose between **Mock Interview** or **Practice Mode**
 - AI asks DSA problems, gives hints, and evaluates solutions
 - Remembers conversation context throughout the session
