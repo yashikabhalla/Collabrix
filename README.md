@@ -75,7 +75,6 @@ Go  •  Rust  •  Kotlin  •  Swift  •  PHP  •  Ruby
 | Feature | Free | Pro |
 |---|:---:|:---:|
 | Rooms per month | 3 | Unlimited |
-| Participants per room | 2 | 5 |
 | Programming languages | 8 | 10+ |
 | Code execution | ✅ | ✅ |
 | AI Interviewer | ❌ | ✅ |
