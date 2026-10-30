@@ -193,20 +193,20 @@ Open [http://localhost:3000](http://localhost:3000) 🎉
 User creates or joins a room
           │
           ▼
-  Real-Time Editor (Liveblocks)
-  cursors · presence · sync <50ms
+Real-Time Collaboration (Liveblocks)
+cursors · presence · real-time sync
           │
           ▼
-  Code Execution (JDoodle)
-  10+ languages · output below editor
+Code Editor & Execution
+Monaco Editor · JDoodle · 10+ languages
           │
           ▼
-  AI Interviewer (Groq)
-  mock interview · hints · evaluation
+AI Interviewer (Groq)
+mock interview · hints · evaluation
           │
           ▼
-  Video Call (Jitsi) — Pro only
-  face-to-face mock interview
+Video Call (Jitsi) — Pro only
+face-to-face mock interviews
 ```
  
 ---
