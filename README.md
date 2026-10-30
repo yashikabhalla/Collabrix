@@ -59,9 +59,9 @@ Go  •  Rust  •  Kotlin  •  Swift  •  PHP  •  Ruby
 | Framework | Next.js 16, React 18, TypeScript |
 | Styling | Tailwind CSS, shadcn/ui |
 | Code Editor | Monaco Editor |
-| Real-Time Sync | Liveblocks (CRDT, <50ms latency) |
-| AI | Groq API — Llama 3.1 8B Instant |
-| Video Calling | Jitsi Meet SDK |
+| Real-Time Sync | Liveblocks (CRDT) |
+| AI | Groq API — GPT-OSS-20B |
+| Video Calling | Jitsi Meet |
 | Authentication | Clerk |
 | Database | PostgreSQL + Prisma ORM |
 | Payments | Razorpay |
