@@ -21,10 +21,10 @@ Collabrix is a full-stack collaborative coding platform built for technical inte
 ## ✨ Core Features
  
 ### 👨‍💻 Real-Time Collaborative Editor
-- Monaco Editor (same as VS Code) with live multi-cursor support
+- Monaco Editor with real-time multi-user editing and live cursor tracking
 - Cursor tracking with user names and colors
 - Presence indicators showing who is online
-- Sub-50ms sync latency powered by Liveblocks CRDT
+
 ### 🤖 AI Interviewer (Chatbot)
 - Powered by **Groq API (Llama 3.1)** — extremely fast responses
 - Choose between **Mock Interview** or **Practice Mode**
